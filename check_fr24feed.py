@@ -257,15 +257,27 @@ def get_metrics(data):
         metrics = {
             'adsb_tracked': data['feed_num_ac_adsb_tracked'],
             'non_adsb_tracked': data['feed_num_ac_non_adsb_tracked'],
-            'sum_tracked': data['feed_num_ac_tracked'],
-            'feed_status': data['feed_status'],
-            'last_rx_connect_status': data['last_rx_connect_status'],
-            'feed_last_connected_time': datetime.datetime.utcfromtimestamp(int(data['feed_last_connected_time'])).strftime("%Y-%m-%d %H:%M:%S")
+            'sum_tracked': data['feed_num_ac_tracked']
         }
 
         return (True, metrics)
     except:
         return (False, 'ValueError: Metrics could not be parsed') 
+
+def get_status(data):
+
+    try:
+        status = {
+            'feed_status': data['feed_status'] ,
+            'last_rx_connect_status': data['last_rx_connect_status'],
+            'feed_last_connected_time': datetime.datetime.utcfromtimestamp(int(data['feed_last_connected_time'])).strftime("%Y-%m-%d %H:%M:%S")
+        }
+
+        return (True, status)
+    except:
+        return (False, 'ValueError: Status could not be parsed') 
+
+
 
 def main():
     """The main function. Hier spielt die Musik.
@@ -288,13 +300,12 @@ def main():
     response = coe(run_monitor_check(path))
     diffSecs = coe(get_sec_last_status(response))
     metrics = coe(get_metrics(response))
+    status = coe(get_status(response))
 
     # # Add metrics to perfdata
     perfdata += get_perfdata('adsb_tracked', metrics['adsb_tracked'], None, None, None, 0, None)
     perfdata += get_perfdata('non_adsb_tracked', metrics['non_adsb_tracked'], None, None, None, 0, None)
     perfdata += get_perfdata('sum_tracked', metrics['sum_tracked'], None, None, None, 0, None)
-    perfdata += get_perfdata('feed_status', metrics['feed_status'], None, None, None, None, None)
-    perfdata += get_perfdata('last_rx_connect_status', metrics['last_rx_connect_status'], None, None, None, None, None)
 
 
     # check warn and crit thresholds
@@ -308,7 +319,7 @@ def main():
                 state = STATE_WARN
             else:
                 msg = 'Feeder: OK - ' + str(diffSecs) + 's since last upload'
-                msg += '\nStatus: {}'.format(metrics['feed_status'] + ' since ' + metrics['feed_last_connected_time']
+                msg += '\nStatus: {}'.format(status['feed_status'] + ' since ' + status['feed_last_connected_time']
                 )
 
                 state = STATE_OK

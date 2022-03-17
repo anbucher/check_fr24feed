@@ -260,7 +260,7 @@ def get_metrics(data):
             'sum_tracked': data['feed_num_ac_tracked'],
             'feed_status': data['feed_status'],
             'last_rx_connect_status': data['last_rx_connect_status'],
-            'feed_last_connected_time': datetime.datetime.utcfromtimestamp(int(data['feed_last_connected_time']))
+            'feed_last_connected_time': datetime.datetime.utcfromtimestamp(int(data['feed_last_connected_time'])).strftime("%Y-%m-%d %H:%M:%S")
         }
 
         return (True, metrics)

@@ -52,8 +52,8 @@ DEFAULT_CRIT = 3600 # seconds
 # should generally NOT be reported as UNKNOWN states.
 
 # Author of state definition
-# __author__ = 'Linuxfabrik GmbH, Zurich/Switzerland'
-# __version__ = '2020043001'
+# __author__ = 'Andreas Bucher'
+# __version__ = '2022031701'
 
 
 STATE_OK = 0
